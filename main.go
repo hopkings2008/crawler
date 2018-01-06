@@ -15,6 +15,8 @@ import (
 	"github.com/PuerkitoBio/fetchbot"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hopkings/crawler/parser"
+	_ "github.com/hopkings/crawler/parser58"
+	_ "github.com/hopkings/crawler/ycparser"
 )
 
 var (
@@ -61,10 +63,20 @@ func main() {
 				return
 			}
 			// Check the doc format to find the info.
-			whi := &parser.WarehouseInfo{}
-			parser.DocParse(doc, whi)
-			if whi.Location != "" && whi.Money != "" {
-				fmt.Printf("info: %s: %s\n", res.Request.URL.String(), whi.String())
+			pf, err := parser.BuildFactory(res.Request.URL.String())
+			if err != nil {
+				fmt.Printf("[ERR] failed to get parser factory for %s, err: %v\n", res.Request.URL.String(), err)
+			} else {
+				if parser, err := pf.Build(); err == nil {
+					/*if whi, err := parser.Parse(doc); err == nil {
+						if 0 != whi.IsValid {
+							fmt.Printf("warehouse: %s: %s\n", res.Request.URL.String(), whi.String())
+						}
+					}*/
+					if _, err := parser.Parse(doc); err != nil {
+						fmt.Printf("failed to pase: %s, err: %v\n", res.Request.URL.String(), err)
+					}
+				}
 			}
 
 			// Enqueue all links as HEAD requests
@@ -76,7 +88,7 @@ func main() {
 	//mux.Response().Method("HEAD").Host(u.Host).ContentType("text/html").Handler(fetchbot.HandlerFunc(
 	mux.Response().Method("HEAD").ContentType("text/html").Handler(fetchbot.HandlerFunc(
 		func(ctx *fetchbot.Context, res *http.Response, err error) {
-			if !strings.Contains(res.Request.Host, "58.com") {
+			if !strings.Contains(res.Request.Host, "warehouse") {
 				return
 			}
 			if _, err := ctx.Q.SendStringGet(ctx.Cmd.URL().String()); err != nil {
