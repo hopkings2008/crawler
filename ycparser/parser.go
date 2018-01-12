@@ -24,6 +24,12 @@ func (yp *YcParser) Parse(doc *goquery.Document) (*parser.WarehouseInfo, error) 
 		})
 	})
 
+	doc.Find(".warehouse-msg-box").Each(func(i int, sel *goquery.Selection) {
+		sel.Find(".msg-name").Each(func(ii int, detail *goquery.Selection) {
+			fmt.Printf(" %s", detail.Text())
+		})
+	})
+
 	doc.Find(".warehouse-list-bold").Each(func(i int, ar *goquery.Selection) {
 		ar.Find(".dl-left dd").Each(func(i int, area *goquery.Selection) {
 			if 0 == i {
@@ -94,6 +100,18 @@ func (yp *YcParser) Parse(doc *goquery.Document) (*parser.WarehouseInfo, error) 
 					money = strings.Replace(money, "\n", "", -1)
 					fmt.Printf(" 免租期: %s", money)
 				}
+			}
+		})
+
+		contentSelection.Find(".message-left-content").Each(func(i int, content *goquery.Selection) {
+			if content.Find(".message-left-title").Text() == "消防安保" {
+				content.Find(".ml-content-list").Each(func(iii int, child *goquery.Selection) {
+					child.Find("li").Each(func(iii int, subchild *goquery.Selection) {
+						anfang := strings.Replace(subchild.Text(), " ", "", -1)
+						anfang = strings.Replace(anfang, "\n", "", -1)
+						fmt.Printf(" %s", anfang)
+					})
+				})
 			}
 		})
 	})

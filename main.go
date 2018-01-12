@@ -38,8 +38,8 @@ func main() {
 	flag.Parse()
 
 	// Parse the provided seed
-	//u, err := url.Parse(*seed)
-	_, err := url.Parse(*seed)
+	u, err := url.Parse(*seed)
+	//_, err := url.Parse(*seed)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,6 +56,9 @@ func main() {
 	// requests.
 	mux.Response().Method("GET").ContentType("text/html").Handler(fetchbot.HandlerFunc(
 		func(ctx *fetchbot.Context, res *http.Response, err error) {
+			/*if !strings.Contains(res.Request.Host, "warehouse") {
+				return
+			}*/
 			// Process the body to find the links
 			doc, err := goquery.NewDocumentFromResponse(res)
 			if err != nil {
@@ -75,7 +78,11 @@ func main() {
 					}*/
 					if _, err := parser.Parse(doc); err != nil {
 						fmt.Printf("failed to pase: %s, err: %v\n", res.Request.URL.String(), err)
+					} else {
+						fmt.Printf("succeeded to parse: %s\n", res.Request.URL.String())
 					}
+				} else {
+					fmt.Printf("failed to get the parser for %s\n", res.Request.URL.String())
 				}
 			}
 
@@ -85,8 +92,8 @@ func main() {
 
 	// Handle HEAD requests for html responses coming from the source host - we don't want
 	// to crawl links from other hosts.
-	//mux.Response().Method("HEAD").Host(u.Host).ContentType("text/html").Handler(fetchbot.HandlerFunc(
-	mux.Response().Method("HEAD").ContentType("text/html").Handler(fetchbot.HandlerFunc(
+	mux.Response().Method("HEAD").Host(u.Host).ContentType("text/html").Handler(fetchbot.HandlerFunc(
+		//mux.Response().Method("HEAD").ContentType("text/html").Handler(fetchbot.HandlerFunc(
 		func(ctx *fetchbot.Context, res *http.Response, err error) {
 			if !strings.Contains(res.Request.Host, "warehouse") {
 				return
