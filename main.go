@@ -14,6 +14,7 @@ import (
 
 	"github.com/PuerkitoBio/fetchbot"
 	"github.com/PuerkitoBio/goquery"
+	_ "github.com/hopkings/crawler/icangbao"
 	"github.com/hopkings/crawler/parser"
 	_ "github.com/hopkings/crawler/parser58"
 	_ "github.com/hopkings/crawler/ycparser"
@@ -95,9 +96,9 @@ func main() {
 	mux.Response().Method("HEAD").Host(u.Host).ContentType("text/html").Handler(fetchbot.HandlerFunc(
 		//mux.Response().Method("HEAD").ContentType("text/html").Handler(fetchbot.HandlerFunc(
 		func(ctx *fetchbot.Context, res *http.Response, err error) {
-			if !strings.Contains(res.Request.Host, "warehouse") {
+			/*if !strings.Contains(res.Request.Host, "warehouse") {
 				return
-			}
+			}*/
 			if _, err := ctx.Q.SendStringGet(ctx.Cmd.URL().String()); err != nil {
 				fmt.Printf("[ERR] %s %s - %s\n", ctx.Cmd.Method(), ctx.Cmd.URL(), err)
 			}
