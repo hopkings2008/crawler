@@ -14,6 +14,7 @@ import (
 
 	"github.com/PuerkitoBio/fetchbot"
 	"github.com/PuerkitoBio/goquery"
+	_ "github.com/hopkings/crawler/china"
 	_ "github.com/hopkings/crawler/icangbao"
 	"github.com/hopkings/crawler/parser"
 	_ "github.com/hopkings/crawler/parser58"
