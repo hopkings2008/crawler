@@ -16,6 +16,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/hopkings/crawler/china"
 	_ "github.com/hopkings/crawler/icangbao"
+	_ "github.com/hopkings/crawler/oym56lm"
 	"github.com/hopkings/crawler/parser"
 	_ "github.com/hopkings/crawler/parser58"
 	_ "github.com/hopkings/crawler/ycparser"
